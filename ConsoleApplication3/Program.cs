@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Drawing.Printing;
 using System.IO;
 using VoxelSplitter;
 
@@ -33,19 +34,25 @@ namespace ConsoleApplication3
             //Console.ReadLine();
             var voxelData = loader.GetVoxelDataZXY(ReadingStrategy.RowPerSlice);
             var splitter = new VoxelStore<uint>(voxelData);
-            splitter.Dimension=Dimension.Y;
+            PrintAllSlices(splitter, Dimension.X);
+            PrintAllSlices(splitter, Dimension.Y);
+            PrintAllSlices(splitter, Dimension.Z);
+        }
+
+        private static void PrintAllSlices(VoxelStore<uint> splitter, Dimension dimension)
+        {
+            splitter.Dimension = dimension;
 
             for (int j = 0; j < splitter.SideLengthC; j++)
             {
 
-                PrintSlice(splitter.GetSlice(j), j);
+                PrintSlice(splitter.GetSlice(j),dimension.ToString(), j);
 
             }
         }
 
-
         
-        private static void PrintSlice(uint[,] uints, int z)
+        private static void PrintSlice(uint[,] uints,string dimensionPrefix, int z)
         {
             var image = new Bitmap(uints.GetLength(0), uints.GetLength(1), PixelFormat.Format24bppRgb);
             for (int y = 0; y < uints.GetLength(1); y++)
@@ -56,7 +63,7 @@ namespace ConsoleApplication3
                         image.SetPixel(x, y, ChooseColor(uints[x,y]));
                 }
             }
-            image.Save($"test{z}.png", ImageFormat.Png);
+            image.Save($"{dimensionPrefix}_{z}.png", ImageFormat.Png);
             image.Dispose();
 
         }
