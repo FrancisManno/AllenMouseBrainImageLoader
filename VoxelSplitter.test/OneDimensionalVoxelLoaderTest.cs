@@ -7,7 +7,7 @@ namespace VoxelSplitter.test
     public class OneDimensionalVoxelLoaderTest
     {
         [TestMethod]
-        public void VoxelStoreTest_RawDataIsEmpty_DefaultValueIsSet()
+        public void GetVoxelDataZXYTest_RawDataIsEmpty_DefaultValueIsSet()
         {
 
             var target = new OneDimensionalVoxelLoader<int>(new int[1], 1, 1, 1);
@@ -16,7 +16,7 @@ namespace VoxelSplitter.test
 
         }
         [TestMethod]
-        public void VoxelStoreTest_SideLengthOne_DataHasCorrectSideLength()
+        public void GetVoxelDataZXYTest_SideLengthOne_DataHasCorrectSideLength()
         {
 
             var target = new OneDimensionalVoxelLoader<int>(new int[1], 1, 1, 1);
@@ -28,7 +28,7 @@ namespace VoxelSplitter.test
         }
 
         [TestMethod]
-        public void VoxelStoreTest_DataHasCorrectSideLength_variant1()
+        public void GetVoxelDataZXYTest_DataHasCorrectSideLength_variant1()
         {
             var testData = new[] { 1, 2, 3, 4, 5, 6};
 
@@ -42,7 +42,7 @@ namespace VoxelSplitter.test
 
 
         [TestMethod]
-        public void VoxelStoreTest_DataHasCorrectSideLength_variant2()
+        public void GetVoxelDataZXYTest_DataHasCorrectSideLength_variant2()
         {
 
             var target = new OneDimensionalVoxelLoader<int>(new int[6], 3,1,2);
@@ -54,7 +54,7 @@ namespace VoxelSplitter.test
         }
 
         [TestMethod]
-        public void VoxelStoreTest_DataHasCorrectSideLength_variant3()
+        public void GetVoxelDataZXYTest_DataHasCorrectSideLength_variant3()
         {
 
             var target = new OneDimensionalVoxelLoader<int>(new int[6], 2,3,1);
@@ -67,7 +67,7 @@ namespace VoxelSplitter.test
 
 
         [TestMethod]
-        public void VoxelStoreTest_CheckReadingStrategy()
+        public void GetVoxelDataZXYTest_CheckReadingStrategy()
         {
             var testData = new[] { 1, 2, 3, 4, 5, 6, 7, 8 };
             var target = new OneDimensionalVoxelLoader<int>(testData, 2, 2, 2);
@@ -83,7 +83,7 @@ namespace VoxelSplitter.test
 
         }
         [TestMethod, ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void VoxelStoreTest_TooManyValuesInRawData()
+        public void ConstructorTest_TooManyValuesInRawData()
         {
 
             var target = new OneDimensionalVoxelLoader<int>(new int[10], 1, 2, 3);
@@ -92,7 +92,7 @@ namespace VoxelSplitter.test
 
 
         [TestMethod, ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void VoxelStoreTest_ToFewValuesInRawData()
+        public void ConstructorTest_ToFewValuesInRawData()
         {
 
             var target = new OneDimensionalVoxelLoader<int>(new int[1], 1, 2, 3);

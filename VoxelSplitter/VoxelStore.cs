@@ -24,6 +24,8 @@ namespace VoxelSplitter
 
         public VoxelStore(T[,,] rawdata)
         {
+            if (rawdata == null)
+                throw new ArgumentNullException();
             Data = rawdata;
             Dimension = Dimension.X;
         }
@@ -31,15 +33,12 @@ namespace VoxelSplitter
 
         public T[,] GetSlice(int slice)
         {
-            var newX = 0;
-            var newY = 0;
-            var newZ = 0;
-            T[,] result = new T[SideLengthA, SideLengthB];
-            for (int x = 0; x < SideLengthA; x++)
+            var result = new T[SideLengthA, SideLengthB];
+            for (var x = 0; x < SideLengthA; x++)
             {
-                for (int y = 0; y < SideLengthB; y++)
+                for (var y = 0; y < SideLengthB; y++)
                 {
-                    result[x, y] = _accessor(x,y,slice);
+                    result[x, y] = _accessor(x, y, slice);
                 }
             }
 
@@ -53,29 +52,32 @@ namespace VoxelSplitter
             {
                 case Dimension.Y:
                     {
-                        SideLengthA = Data.GetLength(1);
-                        SideLengthB = Data.GetLength(0);
-                        SideLengthC = Data.GetLength(2);
-                        _accessor = (a, b, c) => Data[b, a, c];
+                        SideLengthA = Data.GetLength(0);
+                        SideLengthB = Data.GetLength(2);
+                        SideLengthC = Data.GetLength(1);
+                        _accessor = (a, b, c) => Data[a, c, b];
 
                         break;
                     }
                 case Dimension.Z:
                     {
+
                         SideLengthA = Data.GetLength(1);
-                        SideLengthB = Data.GetLength(2);
-                        SideLengthC = Data.GetLength(0);
-                        _accessor = (a, b, c) => Data[c, a, b];
+                        SideLengthB = Data.GetLength(0);
+                        SideLengthC = Data.GetLength(2);
+                        _accessor = (a, b, c) => Data[b, a, c];
+
+
                         break;
                     }
                 case Dimension.X:
                 default:
                     {
 
-                        SideLengthA = Data.GetLength(0);
+                        SideLengthA = Data.GetLength(1);
                         SideLengthB = Data.GetLength(2);
-                        SideLengthC = Data.GetLength(1);
-                        _accessor = (a, b, c) => Data[a, c, b];
+                        SideLengthC = Data.GetLength(0);
+                        _accessor = (a, b, c) => Data[c, a, b];
                         break;
                     }
             }
