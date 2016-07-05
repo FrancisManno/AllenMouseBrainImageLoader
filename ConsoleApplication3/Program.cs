@@ -33,12 +33,12 @@ namespace ConsoleApplication3
             //Console.ReadLine();
             var voxelData = loader.GetVoxelDataZXY(ReadingStrategy.RowPerSlice);
             var splitter = new VoxelStore<uint>(voxelData);
+            splitter.Dimension=Dimension.Y;
 
-
-            for (int j = 0; j < DIMENSION_SLICES; j++)
+            for (int j = 0; j < splitter.SideLengthC; j++)
             {
 
-                PrintSlice(splitter.GetSlice(Dimension.X, j), j);
+                PrintSlice(splitter.GetSlice(j), j);
 
             }
         }
