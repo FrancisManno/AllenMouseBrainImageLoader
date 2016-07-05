@@ -41,7 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ReadingStrategy.cs" />
-    <Compile Include="VoxelLoader.cs" />
+    <Compile Include="OneDimensionalVoxelLoader.cs" />
     <Compile Include="VoxelStore.cs" />
     <Compile Include="Dimension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
