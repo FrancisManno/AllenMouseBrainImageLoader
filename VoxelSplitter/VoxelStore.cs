@@ -1,71 +1,100 @@
 ﻿using System;
+using VoxelSplitter.Enum;
 
 namespace VoxelSplitter
 {
     public class VoxelStore<T>
     {
-        private Dimension _dimension;
+        private Dimension _dimensionToSliceOver;
         private Func<int, int, int, T> _accessor;
         public T[,,] Data { get; private set; }
-        public int SideLengthA { get; private set; }
-        public int SideLengthB { get; private set; }
-        public int SideLengthC { get; private set; }
 
-        public Dimension Dimension
+        public int SideLengthX => Data.GetLength(0);
+
+        public int SideLengthY => Data.GetLength(1);
+        public int SideLengthZ => Data.GetLength(2);
+
+        public Dimension DimensionToSliceOver
         {
-            get { return _dimension; }
+            get { return _dimensionToSliceOver; }
             set
             {
-                _dimension = value;
+                _dimensionToSliceOver = value;
                 ComputeDimensions();
             }
         }
 
-
+        /// <summary>
+        /// Creates a VoxelStore
+        /// </summary>
+        /// <param name="rawdata">The rawdata to store</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="rawdata"/> equals null</exception>
         public VoxelStore(T[,,] rawdata)
         {
             if (rawdata == null)
                 throw new ArgumentNullException();
             Data = rawdata;
-            Dimension = Dimension.X;
         }
 
-
-        public T[,] GetSlice(int slice)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="slice">The slice to retrieve</param>
+        /// <param name="dimensionToSliceOver">The dimension to slice over</param>
+        /// <returns>If <paramref name="dimensionToSliceOver"/> equals Z -> it returns an array with [x,y]. If equals Y -> [z,x], X returns [y,z]</returns>
+        public T[,] GetSliceOfDimension(int slice, Dimension dimensionToSliceOver)
         {
-            var result = new T[SideLengthA, SideLengthB];
-            for (var x = 0; x < SideLengthA; x++)
+
+            var result = GetEmptyArrayForDimension(dimensionToSliceOver);
+            for (var x = 0; x < result.GetLength(0); x++)
             {
-                for (var y = 0; y < SideLengthB; y++)
+                for (var y = 0; y < result.GetLength(1); y++)
                 {
-                    result[x, y] = _accessor(x, y, slice);
+                    result[x, y] = GetAccessFunc(dimensionToSliceOver)(x, y, slice);
                 }
             }
 
             return result;
         }
 
-        private void ComputeDimensions()
-        {
+        //public T[][,] GetAllSclicesOverDimension(Dimension dimension)
+        //{
+        //}
 
-            switch (Dimension)
+        private T[,] GetEmptyArrayForDimension(Dimension dimension)
+        {
+            T[,] result;
+            switch (dimension)
+            {
+                case Dimension.X:
+                    result = new T[SideLengthY,SideLengthZ];
+                    break;
+                case Dimension.Y:
+                    result = new T[SideLengthZ,SideLengthX];
+                    break;
+                case Dimension.Z:
+                default:
+                    result = new T[SideLengthX, SideLengthY];
+                    break;
+            }
+            return result;
+        }
+
+        private Func<int, int, int, T> GetAccessFunc(Dimension dimension)
+        {
+            Func<int, int, int, T> result;
+            switch (dimension)
             {
                 case Dimension.Y:
                     {
-                        SideLengthA = Data.GetLength(0);
-                        SideLengthB = Data.GetLength(2);
-                        SideLengthC = Data.GetLength(1);
-                        _accessor = (a, b, c) => Data[a, c, b];
+                        result = (a, b, c) => Data[b, c, a];
 
                         break;
                     }
                 case Dimension.Z:
                     {
 
-                        SideLengthA = Data.GetLength(1);
-                        SideLengthB = Data.GetLength(0);
-                        SideLengthC = Data.GetLength(2);
-                        _accessor = (a, b, c) => Data[b, a, c];
+                        result = (a, b, c) => Data[a, b, c];
 
 
                         break;
@@ -74,13 +103,17 @@ namespace VoxelSplitter
                 default:
                     {
 
-                        SideLengthA = Data.GetLength(1);
-                        SideLengthB = Data.GetLength(2);
-                        SideLengthC = Data.GetLength(0);
-                        _accessor = (a, b, c) => Data[c, a, b];
+                        result = (a, b, c) => Data[c, a, b];
                         break;
                     }
             }
+            return result;
+        }
+
+        private void ComputeDimensions()
+        {
+
+            _accessor = GetAccessFunc(DimensionToSliceOver);
         }
     }
 }

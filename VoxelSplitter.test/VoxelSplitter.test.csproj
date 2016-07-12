@@ -52,9 +52,10 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Loader\TwoDimensionalVoxelLoaderTest.cs" />
     <Compile Include="VoxelStoreTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="OneDimensionalVoxelLoaderTest.cs" />
+    <Compile Include="Loader\OneDimensionalVoxelLoaderTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VoxelSplitter\VoxelSplitter.csproj">

@@ -32,6 +32,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,10 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ReadingStrategy.cs" />
-    <Compile Include="OneDimensionalVoxelLoader.cs" />
+    <Compile Include="Enum\ArrayOrder.cs" />
+    <Compile Include="Enum\ReadingStrategy.cs" />
+    <Compile Include="Loader\IVoxelLoader.cs" />
+    <Compile Include="Loader\OneDimensionalVoxelLoader.cs" />
+    <Compile Include="Loader\TwoDimensionalVoxelLoader.cs" />
     <Compile Include="VoxelStore.cs" />
-    <Compile Include="Dimension.cs" />
+    <Compile Include="Enum\Dimension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,4 +1,4 @@
-﻿namespace VoxelSplitter
+﻿namespace VoxelSplitter.Enum
 {
     public enum Dimension
     {
