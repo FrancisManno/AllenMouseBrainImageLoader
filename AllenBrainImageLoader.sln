@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AllenMouseBrainAverageImageLoader", "ConsoleApplication3\AllenMouseBrainAverageImageLoader.csproj", "{1F686EE3-2135-4177-A977-4D9700B5A546}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AllenMouseBrainAverageImageLoader", "AllenMouseBrainAverageImageLoader\AllenMouseBrainAverageImageLoader.csproj", "{1F686EE3-2135-4177-A977-4D9700B5A546}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AllenMouseBrainAnnotationLoader", "AllenMouseBrainAnnotationLoader\AllenMouseBrainAnnotationLoader.csproj", "{0E1666A7-98ED-4896-BA46-09C65EF6EB16}"
 EndProject
