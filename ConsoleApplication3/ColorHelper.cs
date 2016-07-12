@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace ConsoleApplication3
+namespace AllenMouseBrainAverageImageLoader
 {
     public static class ColorHelper
     {

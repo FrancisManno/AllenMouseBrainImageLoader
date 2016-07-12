@@ -7,22 +7,33 @@ using VoxelSplitter;
 using VoxelSplitter.Enum;
 using VoxelSplitter.Loader;
 
-namespace ConsoleApplication3
+namespace AllenMouseBrainAverageImageLoader
 {
+    /// <summary>
+    /// Loads a set of images of the same dimension in a SmallColor VoxelArray
+    /// </summary>
     public class ImageStackVoxelLoader
     {
-        private TwoDimensionalVoxelLoader<SmallColor> _backingLoader;
+        private readonly TwoDimensionalVoxelLoader<SmallColor> _backingLoader;
         public int SideLengthX { get; set; }
         public int SideLengthY { get; set; }
         public int SideLengthZ { get; set; }
-   
 
+        /// <summary>
+        /// Loads a set of images from <paramref name="path"/> in a VoxelStore
+        /// </summary>
+        /// <param name="path">The path of the images</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> is empty or null</exception>
+        /// <exception cref="DirectoryNotFoundException">Thrown if directory <paramref name="path"/> is not found</exception>
+        /// <exception cref="FileNotFoundException">Thrown if the directory <paramref name="path"/> is empty</exception>
+        /// <exception cref="ApplicationException">Thrown if no image could be loaded</exception>
         public ImageStackVoxelLoader(string path)
         {
-            if (path == null)
+            if (string.IsNullOrEmpty(path))
             {
                 throw new ArgumentNullException();
             }
+
             if (!Directory.Exists(path))
             {
                 throw new DirectoryNotFoundException();
@@ -36,8 +47,8 @@ namespace ConsoleApplication3
             }
 
             var intermediateStore = new List<SmallColor[,]>();
-            
             SideLengthZ = files.Length;
+
             foreach (var fileInfo in files)
             {
                 var image = (Bitmap)Image.FromFile(fileInfo.FullName);
@@ -61,8 +72,8 @@ namespace ConsoleApplication3
             {
                 throw new ApplicationException("No image could be loaded");
             }
-                
-            
+
+
         }
 
         public VoxelStore<SmallColor> GetVoxelDataInOrder(ArrayOrder order)
