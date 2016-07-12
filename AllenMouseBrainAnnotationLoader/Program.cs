@@ -20,17 +20,31 @@ namespace AllenMouseBrainAnnotationLoader
 
         static void Main(string[] args)
         {
+
+            if (args.Length != 2)
+            {
+                throw new ArgumentException("Wrong number of arguments: <program>.exe <path-and-filename-to-annotation.raw> <output-path>");
+            }
+            if (!File.Exists(args[0]))
+            {
+                throw new FileNotFoundException("Could not find the input file");
+            }
+            if (!Directory.Exists(args[1]))
+            {
+                throw new DirectoryNotFoundException("Could not find the output folder for the images. Please create it");
+            }
+
             Colors = new Dictionary<uint, Color>();
-            var content = File.ReadAllBytes(@"C:\users\torben\Desktop\atlasVolume.raw");
+            var content = File.ReadAllBytes(args[0]);
             var contentReadable = ConvertRawDataFromUint32(content);
 
 
             var loader = new OneDimensionalVoxelLoader<uint>(contentReadable, DIMENSION_WIDTH, DIMENSION_HEIGHT, DIMENSION_SLICES);
             var splitter = loader.GetVoxelDataInOrder(ArrayOrder.Zxy);
 
-            PrintAllSlices(splitter, Dimension.X);
-            PrintAllSlices(splitter, Dimension.Y);
-            PrintAllSlices(splitter, Dimension.Z);
+            PrintAllSlices(splitter, Dimension.X, args[1]);
+            PrintAllSlices(splitter, Dimension.Y, args[1]);
+            PrintAllSlices(splitter, Dimension.Z, args[1]);
         }
 
         private static UInt32[] ConvertRawDataFromUint32(byte[] content)
@@ -46,19 +60,19 @@ namespace AllenMouseBrainAnnotationLoader
             return result;
         }
 
-        private static void PrintAllSlices(VoxelStore<uint> splitter, Dimension dimension)
+        private static void PrintAllSlices(VoxelStore<uint> splitter, Dimension dimension, string outputPath)
         {
             splitter.DimensionToSliceOver = dimension;
 
             for (int j = 0; j < splitter.SideLengthZ; j++)
             {
 
-                PrintSlice(splitter.GetSliceOfDimension(j, dimension), dimension.ToString(), j);
+                PrintSlice(splitter.GetSliceOfDimension(j, dimension), dimension.ToString(), j, outputPath);
 
             }
         }
 
-        private static void PrintSlice(uint[,] uints, string dimensionPrefix, int z)
+        private static void PrintSlice(uint[,] uints, string dimensionPrefix, int z, string outputPath)
         {
             var image = new Bitmap(uints.GetLength(0), uints.GetLength(1), PixelFormat.Format24bppRgb);
             for (int y = 0; y < uints.GetLength(1); y++)
@@ -69,7 +83,7 @@ namespace AllenMouseBrainAnnotationLoader
                         image.SetPixel(x, y, ChooseColor(uints[x, y]));
                 }
             }
-            image.Save($"{dimensionPrefix}_{z}.png", ImageFormat.Png);
+            image.Save($"{outputPath}/{dimensionPrefix}_{z}.png", ImageFormat.Png);
             image.Dispose();
 
         }
