@@ -4,7 +4,10 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Printing;
 using System.IO;
+using System.Linq;
 using VoxelSplitter;
+using VoxelSplitter.Enum;
+using VoxelSplitter.Loader;
 
 namespace ConsoleApplication3
 {
@@ -16,24 +19,27 @@ namespace ConsoleApplication3
         const int DIMENSION_WIDTH = 528;
         static void Main(string[] args)
         {
-            Colors = new Dictionary<uint, Color>();
-            var content = File.ReadAllBytes(@"C:\users\torben\Desktop\annotation.raw");
-            var contentReadable = ConvertRawData(content);
 
-            var loader = new OneDimensionalVoxelLoader<uint>(contentReadable,DIMENSION_WIDTH,DIMENSION_HEIGHT, DIMENSION_SLICES);
-            
-            //var count = 0;
-            //foreach (var u in contentReadable)
-            //{
-            //    if (u > 0)
-            //    {
-            //        count++;
-            //    }
-            //}
-            //Console.WriteLine($"There are {count} values ");
-            //Console.ReadLine();
-            var voxelData = loader.GetVoxelDataZXY(ReadingStrategy.RowPerSlice);
-            var splitter = new VoxelStore<uint>(voxelData);
+
+            //Colors = new Dictionary<uint, Color>();
+            //var content = File.ReadAllBytes(@"C:\users\torben\Desktop\atlasVolume.raw");
+            //var contentReadable = ConvertRawDataFromUint32(content);
+
+
+            //var loader = new OneDimensionalVoxelLoader<uint>(contentReadable, DIMENSION_WIDTH, DIMENSION_HEIGHT, DIMENSION_SLICES);
+            //var splitter = loader.GetVoxelDataInOrder(ArrayOrder.Zxy);
+
+            //PrintAllSlices(splitter, Dimension.X);
+            //PrintAllSlices(splitter, Dimension.Y);
+            //PrintAllSlices(splitter, Dimension.Z);
+
+
+
+
+            //--------------------------
+
+            var loader = new ImageStackVoxelLoader(@"C:\Users\Torben\Desktop\MouseCommon\Spaces\P56\AtlasSlices");
+            var splitter = loader.GetVoxelDataInOrder(ArrayOrder.Zxy);
             PrintAllSlices(splitter, Dimension.X);
             PrintAllSlices(splitter, Dimension.Y);
             PrintAllSlices(splitter, Dimension.Z);
@@ -41,17 +47,44 @@ namespace ConsoleApplication3
 
         private static void PrintAllSlices(VoxelStore<uint> splitter, Dimension dimension)
         {
-            splitter.Dimension = dimension;
+            splitter.DimensionToSliceOver = dimension;
 
-            for (int j = 0; j < splitter.SideLengthC; j++)
+            for (int j = 0; j < splitter.SideLengthZ; j++)
             {
 
-                PrintSlice(splitter.GetSlice(j),dimension.ToString(), j);
+                PrintSlice(splitter.GetSliceOfDimension(j, dimension),dimension.ToString(), j);
 
             }
         }
 
-        
+
+        private static void PrintAllSlices(VoxelStore<SmallColor> splitter, Dimension dimension)
+        {
+            splitter.DimensionToSliceOver = dimension;
+
+            for (int j = 0; j < splitter.SideLengthZ; j++)
+            {
+
+                PrintSlice(splitter.GetSliceOfDimension(j,dimension), dimension.ToString(), j);
+
+            }
+        }
+
+        private static void PrintSlice(SmallColor[,] uints, string dimensionPrefix, int z)
+        {
+            var image = new Bitmap(uints.GetLength(0), uints.GetLength(1), PixelFormat.Format24bppRgb);
+            for (int y = 0; y < uints.GetLength(1); y++)
+            {
+                for (int x = 0; x < uints.GetLength(0); x++)
+                {
+                        image.SetPixel(x, y, uints[x, y].ToColor());
+                }
+            }
+            image.Save($"{dimensionPrefix}_{z}.png", ImageFormat.Png);
+            image.Dispose();
+
+        }
+
         private static void PrintSlice(uint[,] uints,string dimensionPrefix, int z)
         {
             var image = new Bitmap(uints.GetLength(0), uints.GetLength(1), PixelFormat.Format24bppRgb);
@@ -85,7 +118,7 @@ namespace ConsoleApplication3
             return Color.FromArgb(red, green, blue);
         }
 
-        private static UInt32[] ConvertRawData(byte[] content)
+        private static UInt32[] ConvertRawDataFromUint32(byte[] content)
         {
             var result = new UInt32[(long)((float)content.Length / 4f)];
             //var counter = 0;
@@ -93,6 +126,29 @@ namespace ConsoleApplication3
             for (var i = 0; i < content.Length; i = i + 4)
             {
                 var uInt32 = BitConverter.ToUInt32(content, i);
+                result[index] = uInt32;
+                index++;
+                //if (uInt32 > 0)
+                //{
+                //    counter++;
+                //    //Console.WriteLine($"BitConverter says {uInt32}, result says {result[i / 4]}, {i / 4}");
+                //}
+            }
+            //Console.WriteLine($"There are {counter} values");
+            //Console.ReadLine();
+            return result;
+        }
+
+
+        private static UInt32[] ConvertRawDataFromByte(byte[] content)
+        {
+            var result = new UInt32[(long)((float)content.Length)];
+            //var counter = 0;
+            var index = 0;
+            
+            for (var i = 0; i < content.Length; i = i + 4)
+            {
+                var uInt32 =content[i];
                 result[index] = uInt32;
                 index++;
                 //if (uInt32 > 0)
