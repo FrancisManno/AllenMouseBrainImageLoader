@@ -36,8 +36,8 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="VoxelSplitter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VoxelSplitter.1.0.0\lib\net452\VoxelSplitter.dll</HintPath>
+    <Reference Include="VoxelSplitter, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VoxelSplitter.1.1.0\lib\net452\VoxelSplitter.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>

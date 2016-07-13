@@ -35,7 +35,7 @@ namespace AllenMouseBrainAverageImageLoader
         {
             splitter.DimensionToSliceOver = dimension;
 
-            for (int j = 0; j < splitter.SideLengthZ; j++)
+            for (int j = 0; j < splitter.GetLengthOfDimension(dimension); j++)
             {
 
                 PrintSlice(splitter.GetSliceOfDimension(j, dimension), dimension.ToString(), j,outputPath);
